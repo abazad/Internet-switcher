@@ -19,17 +19,17 @@ result=re.findall('[ \t]+(0.0.0.0)[ \t]+(0.0.0.0)[ \t]+([0-9.]{7,})[ \t]+([0-9.]
 
 routes=[]
 for i in range(len(result)):
-	routes.append({'ip':result[i][2], 'metric':int(result[i][4]), 'last_command':''})
+	routes.append({'gateway_ip':result[i][2], 'metric':int(result[i][4]), 'metric2': int(result[i][4])})
 
-active=0
+minMetric=999999
 for i in range(len(routes)):
-	if(routes[i]['metric']<routes[active]['metric']): active=i
+	if(routes[i]['metric']<minMetric): minMetric=routes[i]['metric']
 
-print('=================')
-print(routes)
-print('=================')
-
-#-------------------------------------------
+tmp=0
+for i in range(len(routes)):
+	if(routes[i]['metric']==minMetric): tmp+=1
+if(tmp>1): undetFlag=True
+else: undetFlag=False
 	
 class Application(Frame):
 
@@ -39,67 +39,70 @@ class Application(Frame):
 		
 		self.onColor='#0f0'
 		self.offColor='#999'
-		self.active=active
+		self.minMetric=minMetric
 		
-		for i in range(1, len(result)+1):
+		for i in range(len(result)):
+			
+			cur_row=i+1
+			cur_route=routes[i]
 			
 			btn=Button(self)
-			btn.grid(row=i,column=1, sticky='we', padx=5, pady=5)
-			btn["text"]=result[i-1][2]
+			btn.grid(row=cur_row,column=1, sticky='we', padx=5, pady=5)
+			btn["text"]=result[i][2]
 			
 			frm=Frame(self)
-			frm.grid(row=i,column=2, padx=5, pady=5)
+			frm.grid(row=cur_row,column=2, padx=5, pady=5)
 			frm['bg']='#000'
-			frm.grid(row=i,column=2, padx=5, pady=5)
+			frm.grid(row=cur_row,column=2, padx=5, pady=5)
 			frm=Frame(frm, width=18, height=18)
-			if(i-1==active):
+			if(cur_route['metric2']==self.minMetric):
 				frm['bg']=self.onColor
-				routes[i-1]['stat']='on'
-				#self.active=i-1
+				cur_route['stat']='on'
 			else:
 				frm['bg']=self.offColor
-				routes[i-1]['stat']='off'
-			routes[i-1]['led']=frm
+				cur_route['stat']='off'
+			cur_route['led']=frm
 			frm.pack({"side": "left", 'padx': 1, 'pady': 1})
-			btn["command"] = lambda i=i-1: self.btnClick(i)
-
-#-------------------------------------------
-			
-	def showError(self, o):
-		tkinter.messagebox.showerror('Error!', o)
-		root.quit()
+			btn["command"] = lambda i=i: self.btnClick(i)
 
 #-------------------------------------------
 
 	def routeCommand(self, i, kind, metric=1):
-		command='route '+kind+' 0.0.0.0 mask 0.0.0.0 '+routes[i]['ip']+' metric '+str(metric)
-		routes[i]['last_command']=kind
+		command='route '+kind+' 0.0.0.0 mask 0.0.0.0 '+routes[i]['gateway_ip']+' metric '+str(metric)
 		print('=============================================================')
 		print(command)
-		print('-------------------------------------------------------------')
-		ret=os.system(command)
-		print('return code: ', ret)
+		os.system(command)
 		print('=============================================================')
+		routes[i]['metric2']=metric
+
+#-------------------------------------------		
+
+	def delAllRoutes(self):
+		for i in range(len(routes)):
+			if(routes[i]['stat']!='del'):
+				self.routeCommand(i, 'delete')
+				routes[i]['stat']='del'
+				routes[i]['led']['bg']=self.offColor		
+
+#-------------------------------------------		
+
+	def setRoute(self, i):
+		self.routeCommand(i, 'add')
+		routes[i]['led']['bg']=self.onColor
+		routes[i]['stat']='on'
 
 #-------------------------------------------		
 		
 	def btnClick(self, i):
-		
-		if(routes[i]['stat']=='off'):
-			if(self.active!=None):
-				self.routeCommand(self.active, 'delete')
-				routes[self.active]['led']['bg']=self.offColor
-				routes[self.active]['stat']='off'
-			self.routeCommand(i, 'add')
-			routes[i]['led']['bg']=self.onColor
-			routes[i]['stat']='on'
-			self.active=i
+		if(routes[i]['stat']=='off' or routes[i]['stat']=='del'):
+			for j in range(len(result)):
+				if(routes[j]['metric2']<=1 and routes[j]['stat']!='del'):
+					self.routeCommand(j, 'add', 2)
+					routes[j]['stat']='off'
+					routes[j]['led']['bg']=self.offColor
+			self.setRoute(i)
 		else:
-			for j in range(len(routes)):
-				self.routeCommand(j, 'delete')	
-			routes[i]['led']['bg']=self.offColor
-			routes[i]['stat']='off'
-			self.active=None
+			self.delAllRoutes()
 
 #-------------------------------------------
 			
@@ -107,7 +110,9 @@ class Application(Frame):
 		Frame.__init__(self, master)
 		self.pack()
 		self.createWidgets()
+		print('====================================================================')
 		print(routes)
+		print('====================================================================')
 
 #-------------------------------------------
 		
@@ -115,4 +120,4 @@ root = Tk()
 root.title('Default root')
 app = Application(master=root)
 app.mainloop()
-root.destroy()
+
