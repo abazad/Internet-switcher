@@ -6,7 +6,7 @@ import os
 
 #-------------------------------------------
 
-dummyTest=False
+dummyTest=True
 
 if dummyTest: command='type "'+os.path.dirname(os.path.realpath(__file__))+'\dummy_routes.txt"'
 else: command='route print 0.0.0.0'
@@ -71,7 +71,7 @@ class Application(Frame):
 		command='route '+kind+' 0.0.0.0 mask 0.0.0.0 '+routes[i]['gateway_ip']+' metric '+str(metric)
 		print('=============================================================')
 		print(command)
-		os.system(command)
+		if(not dummyTest): os.system(command)
 		print('=============================================================')
 		routes[i]['metric2']=metric
 
@@ -86,21 +86,26 @@ class Application(Frame):
 
 #-------------------------------------------		
 
-	def setRoute(self, i):
+	def routeOn(self, i):
 		self.routeCommand(i, 'add')
 		routes[i]['led']['bg']=self.onColor
 		routes[i]['stat']='on'
 
 #-------------------------------------------		
+
+	def routeOff(self, i):
+		if(routes[i]['stat']!='del'):
+			if(routes[i]['metric2']<=1):
+				self.routeCommand(i, 'add', 2)
+			routes[i]['stat']='off'
+			routes[i]['led']['bg']=self.offColor
+
+#-------------------------------------------		
 		
 	def btnClick(self, i):
 		if(routes[i]['stat']=='off' or routes[i]['stat']=='del'):
-			for j in range(len(result)):
-				if(routes[j]['metric2']<=1 and routes[j]['stat']!='del'):
-					self.routeCommand(j, 'add', 2)
-					routes[j]['stat']='off'
-					routes[j]['led']['bg']=self.offColor
-			self.setRoute(i)
+			for j in range(len(routes)): self.routeOff(j)
+			self.routeOn(i)
 		else:
 			self.delAllRoutes()
 
