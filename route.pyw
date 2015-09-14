@@ -77,7 +77,7 @@ class Application(Frame):
 		command='route '+kind+' 0.0.0.0 mask 0.0.0.0 '+self.routes[i]['gateway']+' metric '+str(metric)
 		print('=============================================================')
 		print(command)
-		if(not dummyTest): os.system(command)
+		if(not dummyTest): p=subprocess.Popen(command, shell=True)
 		print('=============================================================')
 		self.routes[i]['metric2']=metric
 
