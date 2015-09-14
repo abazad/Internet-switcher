@@ -117,11 +117,12 @@ class Application(Frame):
 			self.delAllRoutes()
 
 #-------------------------------------------
+
 	def checkQueue(self):
 		if(not self.queue.empty()):
-			self.queue.get()
 			self.container.destroy()
 			self.createWidgets()
+			self.queue.get()
 		self.after(200, self.checkQueue)
 
 #-------------------------------------------
