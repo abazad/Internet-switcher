@@ -20,5 +20,7 @@ class Async(threading.Thread):
 					if(routes2[i]['gateway']!=routes1[i]['gateway']):
 						changed=True
 						break
-			if(changed): print('routes changed!')
-			
+			if(changed):
+				print('routes changed!')
+				self.mainApp.queue.put('x')
+				

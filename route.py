@@ -4,6 +4,7 @@ import re
 import subprocess
 import os
 from async import *
+import queue
 
 #-------------------------------------------
 
@@ -45,19 +46,21 @@ class Application(Frame):
 		
 		self.routes=self.queryRoutes()
 		
+		self.container=container=Frame(self)
+		container.pack()
+		
 		for i in range(len(self.routes)):
 			
 			cur_row=i+1
 			cur_route=self.routes[i]
 			
-			btn=Button(self)
+			btn=Button(container)
 			btn.grid(row=cur_row,column=1, sticky='we', padx=5, pady=5)
 			btn["text"]=self.routes[i]['gateway']
 			
-			frm=Frame(self)
+			frm=Frame(container)
 			frm.grid(row=cur_row,column=2, padx=5, pady=5)
 			frm['bg']='#000'
-			frm.grid(row=cur_row,column=2, padx=5, pady=5)
 			frm=Frame(frm, width=18, height=18)
 			if(cur_route['gateway']==self.defaultGateway):
 				frm['bg']=self.onColor
@@ -114,6 +117,14 @@ class Application(Frame):
 			self.delAllRoutes()
 
 #-------------------------------------------
+	def checkQueue(self):
+		if(not self.queue.empty()):
+			self.queue.get()
+			self.container.destroy()
+			self.createWidgets()
+		self.after(200, self.checkQueue)
+
+#-------------------------------------------
 			
 	def __init__(self, master=None):
 		Frame.__init__(self, master)
@@ -123,6 +134,8 @@ class Application(Frame):
 		print('====================================================================')
 		print(self.routes)
 		print('====================================================================')
+		self.queue=queue.Queue(1)
+		self.after(200, self.checkQueue)
 
 #-------------------------------------------
 		
