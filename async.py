@@ -22,5 +22,4 @@ class Async(threading.Thread):
 						break
 			if(changed):
 				print('routes changed!')
-				self.mainApp.queue.put('x')
-				
+				if(self.mainApp.queue.empty()): self.mainApp.queue.put('x')
