@@ -30,7 +30,7 @@ for i in range(len(routes)):
 	if(routes[i]['metric']==minMetric): tmp+=1
 if(tmp>1): undetFlag=True
 else: undetFlag=False
-	
+
 class Application(Frame):
 
 #-------------------------------------------
@@ -39,6 +39,9 @@ class Application(Frame):
 		
 		self.onColor='#0f0'
 		self.offColor='#999'
+		self.undetColor='#00f'
+		
+		self.undetFlag=undetFlag
 		self.minMetric=minMetric
 		
 		for i in range(len(result)):
@@ -56,8 +59,12 @@ class Application(Frame):
 			frm.grid(row=cur_row,column=2, padx=5, pady=5)
 			frm=Frame(frm, width=18, height=18)
 			if(cur_route['metric2']==self.minMetric):
-				frm['bg']=self.onColor
-				cur_route['stat']='on'
+				if(undetFlag):
+					frm['bg']=self.undetColor
+					cur_route['stat']='undet'
+				else:
+					frm['bg']=self.onColor
+					cur_route['stat']='on'
 			else:
 				frm['bg']=self.offColor
 				cur_route['stat']='off'
@@ -103,7 +110,7 @@ class Application(Frame):
 #-------------------------------------------		
 		
 	def btnClick(self, i):
-		if(routes[i]['stat']=='off' or routes[i]['stat']=='del'):
+		if(routes[i]['stat']!='on'):
 			for j in range(len(routes)): self.routeOff(j)
 			self.routeOn(i)
 		else:
