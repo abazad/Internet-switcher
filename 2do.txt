@@ -1,1 +1,2 @@
 - 'restore all routes' button and batch file
+- handling possible route command errors in routeCommand
