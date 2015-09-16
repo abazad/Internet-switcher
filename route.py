@@ -19,7 +19,7 @@ out,err=p.communicate()
 fp=open(os.path.dirname(os.path.realpath(__file__))+'\\routes.log', 'ab')
 fp.write(bytes("\n", 'ascii'))
 fp.write(out)
-fp.write(bytes("\n=============================================================\n", 'ascii'))
+fp.write(bytes("\n#############################################################\n", 'ascii'))
 fp.close()
 
 out=out.decode()

@@ -1,0 +1,3 @@
+- handling disconnection of a device (internet connection) while the prog is running
+- use default gateway specified in the output of 'route print' instead of undet...
+- 'restore all routes' button and batch file
