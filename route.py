@@ -1,3 +1,4 @@
+import copy
 from tkinter import *
 import tkinter.messagebox
 import re
@@ -14,7 +15,9 @@ dummyTest=True
 
 funcs.dummyTest=dummyTest
 
-routes=funcs.queryRoutes()
+routes0=funcs.queryRoutes()
+
+routes=copy.deepcopy(routes0)
 
 minMetric=999999
 for i in range(len(routes)):
@@ -129,7 +132,7 @@ class Application(Frame):
 root=Tk()
 root.title('Internet switcher')
 app=Application(master=root)
-app.routes=routes
+app.routes0=routes0
 async=Async(app)
 #async.mainApp=app
 async.start()

@@ -12,5 +12,6 @@ class Async(threading.Thread):
 		while(True):
 			time.sleep(3)
 			routes=funcs.queryRoutes()
-			if(self.mainApp.routes!=routes): print('!!!!')
+			print('######################')
+			print(self.mainApp.routes0==routes)
 			#print(self.mainApp.routes)
