@@ -3,6 +3,8 @@ import tkinter.messagebox
 import re
 import subprocess
 import os
+from async import *
+import funcs
 
 #-------------------------------------------
 
@@ -10,25 +12,9 @@ dummyTest=True
 
 #-------------------------------------------
 
-if dummyTest: command='type "'+os.path.dirname(os.path.realpath(__file__))+'\dummy_routes.txt"'
-else: command='route print 0.0.0.0'
+funcs.dummyTest=dummyTest
 
-p=subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-out,err=p.communicate()
-
-fp=open(os.path.dirname(os.path.realpath(__file__))+'\\routes.log', 'ab')
-fp.write(bytes("\n", 'ascii'))
-fp.write(out)
-fp.write(bytes("\n#############################################################\n", 'ascii'))
-fp.close()
-
-out=out.decode()
-
-result=re.findall('[ \t]+(0.0.0.0)[ \t]+(0.0.0.0)[ \t]+([0-9.]{7,})[ \t]+([0-9.]{7,})[ \t]+([0-9]+)', out)
-
-routes=[]
-for i in range(len(result)):
-	routes.append({'gateway_ip':result[i][2], 'metric':int(result[i][4]), 'metric2': int(result[i][4])})
+routes=funcs.queryRoutes()
 
 minMetric=999999
 for i in range(len(routes)):
@@ -53,14 +39,14 @@ class Application(Frame):
 		self.undetFlag=undetFlag
 		self.minMetric=minMetric
 		
-		for i in range(len(result)):
+		for i in range(len(routes)):
 			
 			cur_row=i+1
 			cur_route=routes[i]
 			
 			btn=Button(self)
 			btn.grid(row=cur_row,column=1, sticky='we', padx=5, pady=5)
-			btn["text"]=result[i][2]
+			btn["text"]=routes[i]['gateway']
 			
 			frm=Frame(self)
 			frm.grid(row=cur_row,column=2, padx=5, pady=5)
@@ -84,7 +70,7 @@ class Application(Frame):
 #-------------------------------------------
 
 	def routeCommand(self, i, kind, metric=1):
-		command='route '+kind+' 0.0.0.0 mask 0.0.0.0 '+routes[i]['gateway_ip']+' metric '+str(metric)
+		command='route '+kind+' 0.0.0.0 mask 0.0.0.0 '+routes[i]['gateway']+' metric '+str(metric)
 		print('=============================================================')
 		print(command)
 		if(not dummyTest): os.system(command)
@@ -126,6 +112,9 @@ class Application(Frame):
 			self.delAllRoutes()
 
 #-------------------------------------------
+	def test(self):
+		print('test...\n')
+#-------------------------------------------
 			
 	def __init__(self, master=None):
 		Frame.__init__(self, master)
@@ -137,7 +126,11 @@ class Application(Frame):
 
 #-------------------------------------------
 		
-root = Tk()
+root=Tk()
 root.title('Internet switcher')
-app = Application(master=root)
+app=Application(master=root)
+app.routes=routes
+async=Async(app)
+#async.mainApp=app
+async.start()
 app.mainloop()
