@@ -19,12 +19,7 @@ class Application(Frame):
 	def prepareRoutes(self):
 	
 		self.routes0=self.queryRoutes()
-
 		self.routes=copy.deepcopy(self.routes0)
-
-		self.minMetric=999999
-		for i in range(len(self.routes)):
-			if(self.routes[i]['metric']<self.minMetric): self.minMetric=self.routes[i]['metric']
 
 #-------------------------------------------
 	
@@ -42,7 +37,10 @@ class Application(Frame):
 		routes=[]
 		for i in range(len(result)):
 			routes.append({'gateway':result[i][2], 'metric':int(result[i][4]), 'metric2': int(result[i][4])})
-	
+			
+		result=re.findall('[ \t]+Default Gateway:[ \t]+([0-9.]{7,})', out)
+		self.defaultGateway=result[0]
+		
 		return routes
 
 #-------------------------------------------
@@ -68,7 +66,7 @@ class Application(Frame):
 			frm['bg']='#000'
 			frm.grid(row=cur_row,column=2, padx=5, pady=5)
 			frm=Frame(frm, width=18, height=18)
-			if(cur_route['metric2']==self.minMetric):
+			if(cur_route['gateway']==self.defaultGateway):
 				frm['bg']=self.onColor
 				cur_route['stat']='on'
 			else:

@@ -10,6 +10,6 @@ class Async(threading.Thread):
 		while(True):
 			time.sleep(3)
 			routes=self.mainApp.queryRoutes()
-			print('######################')
-			print(self.mainApp.routes0==routes)
+			#print('######################')
+			#print(self.mainApp.routes0==routes)
 			#print(self.mainApp.routes)
