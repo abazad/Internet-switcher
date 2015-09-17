@@ -12,7 +12,8 @@ class Async(threading.Thread):
 			routes2=self.mainApp.queryRoutes()
 			routes1=self.mainApp.routes
 			changed=False
-			if(len(routes1) and routes1[0]['stat']=='del' and len(routes2)): changed=True
+			if(len(routes1) and routes1[0]['stat']=='del'):
+				if(len(routes2)): changed=True
 			elif(len(routes2)!=len(routes1)): changed=True
 			else:
 				for i in range(len(routes2)):
