@@ -8,7 +8,7 @@ from async import *
 
 #-------------------------------------------
 
-dummyTest=True
+dummyTest=False
 
 #-------------------------------------------
 
@@ -38,8 +38,9 @@ class Application(Frame):
 		for i in range(len(result)):
 			routes.append({'gateway':result[i][2], 'metric':int(result[i][4]), 'metric2': int(result[i][4])})
 			
-		result=re.findall('[ \t]+Default Gateway:[ \t]+([0-9.]{7,})', out)
-		self.defaultGateway=result[0]
+		result=re.findall('[ \t]*Default Gateway:[ \t]+([0-9.]{7,})', out)
+		if(len(result)): self.defaultGateway=result[0]
+		else: self.defaultGateway=''
 		
 		return routes
 

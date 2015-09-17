@@ -9,7 +9,15 @@ class Async(threading.Thread):
 	def run(self):
 		while(True):
 			time.sleep(3)
-			routes=self.mainApp.queryRoutes()
-			#print('######################')
-			#print(self.mainApp.routes0==routes)
-			#print(self.mainApp.routes)
+			routes2=self.mainApp.queryRoutes()
+			routes1=self.mainApp.routes
+			changed=False
+			if(len(routes1) and routes1[0]['stat']=='del' and len(routes2)): changed=True
+			elif(len(routes2)!=len(routes1)): changed=True
+			else:
+				for i in range(len(routes2)):
+					if(routes2[i]['gateway']!=routes1[i]['gateway']):
+						changed=True
+						break
+			if(changed): print('routes changed!')
+			
