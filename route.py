@@ -1,10 +1,7 @@
 from tkinter import *
-import tkinter.messagebox
 import re
 import subprocess
 import os
-from async import *
-import queue
 
 #-------------------------------------------
 
@@ -118,12 +115,23 @@ class Application(Frame):
 
 #-------------------------------------------
 
-	def checkQueue(self):
-		if(not self.queue.empty()):
+	def check(self):
+		routes1=self.routes
+		routes2=self.queryRoutes()
+		changed=False
+		if(len(routes1) and routes1[0]['stat']=='del'):
+			if(len(routes2)): changed=True
+		elif(len(routes2)!=len(routes1)): changed=True
+		else:
+			for i in range(len(routes2)):
+				if(routes2[i]['gateway']!=routes1[i]['gateway']):
+					changed=True
+					break
+		if(changed):
+			print('route changes detected')
 			self.container.destroy()
 			self.createWidgets()
-			self.queue.get()
-		self.after(200, self.checkQueue)
+		self.after(3000, self.check)
 
 #-------------------------------------------
 			
@@ -135,14 +143,11 @@ class Application(Frame):
 		print('====================================================================')
 		print(self.routes)
 		print('====================================================================')
-		self.queue=queue.Queue(1)
-		self.after(200, self.checkQueue)
+		self.after(3000, self.check)
 
 #-------------------------------------------
 		
 root=Tk()
 root.title('Internet switcher')
 app=Application(master=root)
-async=Async(app)
-async.start()
 app.mainloop()
