@@ -5,7 +5,9 @@ import os
 
 #-------------------------------------------
 
-dummyTest=True
+dummyTest=False
+
+routesCheckInterval=2 #in seconds
 
 #-------------------------------------------
 
@@ -15,7 +17,7 @@ class Application(Frame):
 	
 	def queryRoutes(self):
 	
-		if self.dummyTest: command='type "'+os.path.dirname(os.path.realpath(__file__))+'\dummy_routes.txt"'
+		if dummyTest: command='type "'+os.path.dirname(os.path.realpath(__file__))+'\dummy_routes.txt"'
 		else: command='route print 0.0.0.0'
 
 		p=subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
@@ -75,7 +77,7 @@ class Application(Frame):
 		command='route '+kind+' 0.0.0.0 mask 0.0.0.0 '+self.routes[i]['gateway']+' metric '+str(metric)
 		print('=============================================================')
 		print(command)
-		if(not self.dummyTest): os.system(command)
+		if(not dummyTest): os.system(command)
 		print('=============================================================')
 		self.routes[i]['metric2']=metric
 
@@ -131,19 +133,18 @@ class Application(Frame):
 			print('route changes detected')
 			self.container.destroy()
 			self.createWidgets()
-		self.after(3000, self.check)
+		self.after(routesCheckInterval*1000, self.check)
 
 #-------------------------------------------
 			
 	def __init__(self, master=None):
 		Frame.__init__(self, master)
-		self.dummyTest=dummyTest
 		self.pack()
 		self.createWidgets()
 		print('====================================================================')
 		print(self.routes)
 		print('====================================================================')
-		self.after(3000, self.check)
+		self.after(routesCheckInterval*1000, self.check)
 
 #-------------------------------------------
 		
