@@ -1,4 +1,3 @@
-import copy
 from tkinter import *
 import tkinter.messagebox
 import re
@@ -8,18 +7,11 @@ from async import *
 
 #-------------------------------------------
 
-dummyTest=False
+dummyTest=True
 
 #-------------------------------------------
 
 class Application(Frame):
-
-#-------------------------------------------
-
-	def prepareRoutes(self):
-	
-		self.routes0=self.queryRoutes()
-		self.routes=copy.deepcopy(self.routes0)
 
 #-------------------------------------------
 	
@@ -51,7 +43,7 @@ class Application(Frame):
 		self.onColor='#0f0'
 		self.offColor='#999'
 		
-		self.prepareRoutes()
+		self.routes=self.queryRoutes()
 		
 		for i in range(len(self.routes)):
 			

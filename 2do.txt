@@ -1,2 +1,1 @@
-- handling disconnection of a device (internet connection) while the prog is running
 - 'restore all routes' button and batch file
