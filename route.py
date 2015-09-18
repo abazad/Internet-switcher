@@ -114,9 +114,6 @@ class Application(Frame):
 			self.delAllRoutes()
 
 #-------------------------------------------
-	def test(self):
-		print('test...\n')
-#-------------------------------------------
 			
 	def __init__(self, master=None):
 		Frame.__init__(self, master)
