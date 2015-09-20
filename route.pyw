@@ -101,14 +101,14 @@ class Application(Frame):
 	def delAllRoutes(self):
 		for i in range(len(self.routes)):
 			if(self.routes[i]['stat']!='del'):
-				self.routeCommand(i, 'delete')
+				if(not self.routeCommand(i, 'delete')): continue
 				self.routes[i]['stat']='del'
 				self.routes[i]['led']['bg']=self.offColor		
 
 #-------------------------------------------		
 
 	def routeOn(self, i):
-		self.routeCommand(i, 'add')
+		if(not self.routeCommand(i, 'add')): return
 		self.routes[i]['led']['bg']=self.onColor
 		self.routes[i]['stat']='on'
 
@@ -117,7 +117,7 @@ class Application(Frame):
 	def routeOff(self, i):
 		if(self.routes[i]['stat']!='del'):
 			if(self.routes[i]['metric2']<=1):
-				self.routeCommand(i, 'add', 2)
+				if(not self.routeCommand(i, 'add', 2)): return
 			self.routes[i]['stat']='off'
 			self.routes[i]['led']['bg']=self.offColor
 
