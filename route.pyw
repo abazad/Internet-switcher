@@ -83,13 +83,15 @@ class Application(Frame):
 			p=subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			out,err=p.communicate()
 			if(err):
+				err=err.decode()
 				if(sys.stdin):
-					err=err.decode()
 					print('--------------------------------------------------')
 					print(err)
-				else: self.showError(err)
+				else: self.showError(command+"\n\n"+err)
 		print('=============================================================')
+		if(not dummyTest and err): return False
 		self.routes[i]['metric2']=metric
+		return True
 
 #-------------------------------------------
 	def showError(self, e):
