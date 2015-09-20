@@ -1,3 +1,4 @@
+import tkinter.messagebox
 from tkinter import *
 import re
 import subprocess
@@ -84,12 +85,16 @@ class Application(Frame):
 			if(err):
 				if(sys.stdin):
 					err=err.decode()
-					print('---------------------------------------------')
+					print('--------------------------------------------------')
 					print(err)
+				else: self.showError(err)
 		print('=============================================================')
 		self.routes[i]['metric2']=metric
 
-#-------------------------------------------		
+#-------------------------------------------
+	def showError(self, e):
+		tkinter.messagebox.showerror('Error!', e)
+#-------------------------------------------
 
 	def delAllRoutes(self):
 		for i in range(len(self.routes)):
@@ -126,7 +131,7 @@ class Application(Frame):
 #-------------------------------------------
 
 	def check(self):
-		return
+		return#*******************
 		routes1=self.routes
 		routes2=self.queryRoutes()
 		changed=False
