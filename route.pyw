@@ -133,7 +133,6 @@ class Application(Frame):
 #-------------------------------------------
 
 	def check(self):
-		return#*******************
 		routes1=self.routes
 		routes2=self.queryRoutes()
 		changed=False
