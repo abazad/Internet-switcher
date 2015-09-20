@@ -72,6 +72,12 @@ class Application(Frame):
 			cur_route['led']=frm
 			frm.pack({"side": "left", 'padx': 1, 'pady': 1})
 			btn["command"] = lambda i=i: self.btnClick(i)
+			btn.bind('<Button-3>', self.btnRight)
+
+#-------------------------------------------
+
+	def btnRight(self, e):
+		tkinter.messagebox.showerror('right click', e)
 
 #-------------------------------------------
 
