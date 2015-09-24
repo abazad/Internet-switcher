@@ -30,13 +30,14 @@ class Dialog(Toplevel):
 		Label(frm, text="Enter label for "+self.route['btn']['text']+':').pack({"side": "top", 'padx': 1, 'pady': 1})
 		self.txt=Entry(frm)
 		self.txt.pack()
+		self.txt.focus_set()
 		return frm
 
 	def buttonbox(self):
 		box = Frame(self)
 		w = Button(box, text="Save", width=10, command=self.save, default=ACTIVE)
 		w.pack(padx=5, pady=5)
-		Label(box, justify='left', text='Note: save an empty label to clear\n        a previously set custom label.').pack()
+		Label(box, justify='left', text='Note: save an empty label to clear\na previously set custom label.').pack()
 		self.bind("<Return>", self.save)
 		self.bind("<Escape>", self.cancel)
 		box.pack()
@@ -53,12 +54,12 @@ class Dialog(Toplevel):
 		self.destroy()
 		
 	def writeConfig(self, key, val):
-		print(key+'=>'+val)
+		#print(key+'=>'+val)
 		config_file=os.path.dirname(os.path.realpath(__file__))+'\\config.ini'
 		config = configparser.ConfigParser()
 		config.read(config_file)
 		config.set('button_labels', key, val)
-		with open(config_file, 'w') as file: config.write(file)
+		with open(config_file, 'w', encoding='utf-8') as file: config.write(file)
 		self.parent.container.destroy()
 		self.parent.createWidgets()
 		
