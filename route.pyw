@@ -68,6 +68,8 @@ class Application(Frame):
 			btn=Button(container)
 			btn.grid(row=cur_row,column=1, sticky='we', padx=5, pady=5)
 			
+			cur_route['btn']=btn
+			
 			if(config.has_option('button_labels', self.routes[i]['gateway']) and config.get('button_labels', self.routes[i]['gateway'])): btn["text"]=config.get('button_labels', self.routes[i]['gateway'])
 			else: btn["text"]=self.routes[i]['gateway']
 			
@@ -84,13 +86,13 @@ class Application(Frame):
 			cur_route['led']=frm
 			frm.pack({"side": "left", 'padx': 1, 'pady': 1})
 			btn["command"] = lambda i=i: self.btnClick(i)
-			btn.bind('<Button-3>', self.btnRight)
+			btn.bind('<Button-3>', lambda event, route=cur_route: self.btnRight(route))
 
 #-------------------------------------------
 
-	def btnRight(self, e):
+	def btnRight(self, route):
 		#tkinter.messagebox.showerror('right click', e.widget['text'])
-		Dialog(self, e, 'Set button label')
+		Dialog(self, route, 'Set button label')
 
 #-------------------------------------------
 

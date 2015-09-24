@@ -4,8 +4,8 @@ import configparser
 
 class Dialog(Toplevel):
 
-	def __init__(self, parent, e, title = None):
-		self.e=e
+	def __init__(self, parent, route, title = None):
+		self.route=route
 		Toplevel.__init__(self, parent)
 		self.transient(parent)
 		if title:
@@ -28,7 +28,7 @@ class Dialog(Toplevel):
 	def body(self, master):
 		frm=Frame(master)
 		frm.pack()
-		Label(frm, text="Enter label for "+self.e.widget['text']+':').pack({"side": "top", 'padx': 1, 'pady': 1})
+		Label(frm, text="Enter label for "+self.route['btn']['text']+':').pack({"side": "top", 'padx': 1, 'pady': 1})
 		self.txt=Entry(frm)
 		self.txt.pack()
 		return frm
@@ -44,7 +44,7 @@ class Dialog(Toplevel):
 	def save(self, event=None):
 		self.withdraw()
 		self.update_idletasks()
-		self.writeConfig(self.e.widget['text'], self.txt.get())
+		self.writeConfig(self.route['gateway'], self.txt.get())
 		self.cancel()
 
 	def cancel(self, event=None):
