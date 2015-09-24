@@ -5,6 +5,11 @@ import subprocess
 import os
 import sys
 from entry import *
+import configparser
+
+#============================
+
+
 
 #-------------------------------------------
 
@@ -46,6 +51,10 @@ class Application(Frame):
 		self.onColor='#0f0'
 		self.offColor='#999'
 		
+		config_file=os.path.dirname(os.path.realpath(__file__))+'\\config.ini'
+		config = configparser.ConfigParser()
+		config.read(config_file)
+		
 		self.routes=self.queryRoutes()
 		
 		self.container=container=Frame(self)
@@ -58,7 +67,9 @@ class Application(Frame):
 			
 			btn=Button(container)
 			btn.grid(row=cur_row,column=1, sticky='we', padx=5, pady=5)
-			btn["text"]=self.routes[i]['gateway']
+			
+			if(config.has_option('button_labels', self.routes[i]['gateway']) and config.get('button_labels', self.routes[i]['gateway'])): btn["text"]=config.get('button_labels', self.routes[i]['gateway'])
+			else: btn["text"]=self.routes[i]['gateway']
 			
 			frm=Frame(container)
 			frm.grid(row=cur_row,column=2, padx=5, pady=5)

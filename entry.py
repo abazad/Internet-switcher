@@ -1,5 +1,6 @@
 from tkinter import *
 import os
+import configparser
 
 class Dialog(Toplevel):
 
@@ -43,14 +44,20 @@ class Dialog(Toplevel):
 	def save(self, event=None):
 		self.withdraw()
 		self.update_idletasks()
-		self.apply(self.txt.get())
+		self.writeConfig(self.e.widget['text'], self.txt.get())
 		self.cancel()
 
 	def cancel(self, event=None):
-		# put focus back to the parent window
 		self.parent.focus_set()
 		self.destroy()
-
-	def apply(self, val):
-		print(val)
+		
+	def writeConfig(self, key, val):
+		print(key+'=>'+val)
+		config_file=os.path.dirname(os.path.realpath(__file__))+'\\config.ini'
+		config = configparser.ConfigParser()
+		config.read(config_file)
+		config.set('button_labels', key, val)
+		with open(config_file, 'w') as file: config.write(file)
+		self.parent.container.destroy()
+		self.parent.createWidgets()
 		
