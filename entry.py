@@ -4,95 +4,53 @@ import os
 class Dialog(Toplevel):
 
 	def __init__(self, parent, title = None):
-
 		Toplevel.__init__(self, parent)
 		self.transient(parent)
-
 		if title:
 			self.title(title)
-
 		self.parent = parent
-
 		self.result = None
-
 		body = Frame(self)
 		self.initial_focus = self.body(body)
 		body.pack(padx=5, pady=5)
-
 		self.buttonbox()
-
 		self.grab_set()
-
 		if not self.initial_focus:
 			self.initial_focus = self
-
 		self.protocol("WM_DELETE_WINDOW", self.cancel)
-
 		self.geometry("+%d+%d" % (parent.winfo_rootx()+50,
 								  parent.winfo_rooty()+50))
-
 		self.initial_focus.focus_set()
-
 		self.wait_window(self)
-
-	#
-	# construction hooks
 
 	def body(self, master):
 		#frm=Frame(master)
 		#frm.pack()
 		#Label(frm, text="Label: ").pack({"side": "left", 'padx': 1, 'pady': 1})
-		txt=Entry(master)
-		txt.pack()
+		self.txt=Entry(master)
+		self.txt.pack()
 		#self.e.pack(padx=5)
-		return txt
+		return self.txt
 
 	def buttonbox(self):
-		# add standard button box. override if you don't want the
-		# standard buttons
-
 		box = Frame(self)
-
-		w = Button(box, text="OK", width=10, command=self.ok, default=ACTIVE)
+		w = Button(box, text="Save", width=10, command=self.save, default=ACTIVE)
 		w.pack(side=LEFT, padx=5, pady=5)
-		w = Button(box, text="Cancel", width=10, command=self.cancel)
-		w.pack(side=LEFT, padx=5, pady=5)
-
-		self.bind("<Return>", self.ok)
+		self.bind("<Return>", self.save)
 		self.bind("<Escape>", self.cancel)
-
 		box.pack()
 
-	#
-	# standard button semantics
-
-	def ok(self, event=None):
-
-		if not self.validate():
-			self.initial_focus.focus_set() # put focus back
-			return
-
+	def save(self, event=None):
 		self.withdraw()
 		self.update_idletasks()
-
-		self.apply()
-
+		self.apply(self.txt.get())
 		self.cancel()
 
 	def cancel(self, event=None):
-
 		# put focus back to the parent window
 		self.parent.focus_set()
 		self.destroy()
 
-	#
-	# command hooks
-
-	def validate(self):
-
-		return 1 # override
-
-	def apply(self):
-
-		pass # override
+	def apply(self, val):
+		print(val)
 		
