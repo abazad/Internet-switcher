@@ -78,8 +78,8 @@ class Application(Frame):
 #-------------------------------------------
 
 	def btnRight(self, e):
-		#tkinter.messagebox.showerror('right click', e)
-		Dialog(self, 'Set button label')
+		#tkinter.messagebox.showerror('right click', e.widget['text'])
+		Dialog(self, e, 'Set button label')
 
 #-------------------------------------------
 

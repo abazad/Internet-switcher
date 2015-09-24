@@ -3,7 +3,8 @@ import os
 
 class Dialog(Toplevel):
 
-	def __init__(self, parent, title = None):
+	def __init__(self, parent, e, title = None):
+		self.e=e
 		Toplevel.__init__(self, parent)
 		self.transient(parent)
 		if title:
@@ -24,13 +25,12 @@ class Dialog(Toplevel):
 		self.wait_window(self)
 
 	def body(self, master):
-		#frm=Frame(master)
-		#frm.pack()
-		#Label(frm, text="Label: ").pack({"side": "left", 'padx': 1, 'pady': 1})
-		self.txt=Entry(master)
+		frm=Frame(master)
+		frm.pack()
+		Label(frm, text="Enter label for "+self.e.widget['text']+':').pack({"side": "top", 'padx': 1, 'pady': 1})
+		self.txt=Entry(frm)
 		self.txt.pack()
-		#self.e.pack(padx=5)
-		return self.txt
+		return frm
 
 	def buttonbox(self):
 		box = Frame(self)
