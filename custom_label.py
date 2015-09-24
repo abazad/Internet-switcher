@@ -2,7 +2,7 @@ from tkinter import *
 import os
 import configparser
 
-class Dialog(Toplevel):
+class CustomLabel(Toplevel):
 
 	def __init__(self, parent, route):
 		self.route=route
@@ -42,7 +42,6 @@ class Dialog(Toplevel):
 		self.bind("<Escape>", self.cancel)
 		box.pack()
 
-
 	def save(self, event=None):
 		self.withdraw()
 		self.update_idletasks()
@@ -54,12 +53,11 @@ class Dialog(Toplevel):
 		self.destroy()
 		
 	def writeConfig(self, key, val):
-		#print(key+'=>'+val)
 		config_file=os.path.dirname(os.path.realpath(__file__))+'\\config.ini'
 		config = configparser.ConfigParser()
 		config.read(config_file)
 		config.set('button_labels', key, val)
-		with open(config_file, 'w', encoding='utf-8') as file: config.write(file)
+		with open(config_file, 'w') as file: config.write(file)
 		self.parent.container.destroy()
 		self.parent.createWidgets()
 		

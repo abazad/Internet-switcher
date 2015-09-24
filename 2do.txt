@@ -1,2 +1,2 @@
-- 'restore all routes' button and batch file
-- ability to set custom labels for buttons
+- 'restore all routes' batch file
+- ability to set unicode custom labels for buttons

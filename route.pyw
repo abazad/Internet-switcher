@@ -4,8 +4,7 @@ import re
 import subprocess
 import os
 import sys
-from entry import *
-import configparser
+from custom_label import *
 
 #-------------------------------------------
 
@@ -82,12 +81,15 @@ class Application(Frame):
 			cur_route['led']=frm
 			frm.pack({"side": "left", 'padx': 1, 'pady': 1})
 			btn["command"] = lambda route=cur_route: self.btnClick(route)
-			btn.bind('<Button-3>', lambda event, route=cur_route: self.btnRight(route))
+			btn.bind('<Button-3>', lambda event, route=cur_route: CustomLabel(self, route))
 
-#-------------------------------------------
-
-	def btnRight(self, route):
-		Dialog(self, route)
+		# frm=Frame(self, height=1)
+		# frm['bg']='#000'
+		# frm.pack(fill='x', pady=7)
+		# btn=Button(self)
+		# btn["text"]='Restore all routes'
+		# btn.pack(pady=5)
+		# btn["command"]=self.showRoutesInfo
 
 #-------------------------------------------
 
@@ -100,7 +102,7 @@ class Application(Frame):
 			out,err=p.communicate()
 			if(err):
 				err=err.decode()
-				if(sys.stdin):
+				if(sys.stdout):
 					print('--------------------------------------------------')
 					print(err)
 				else: self.showError(command+"\n\n"+err)
