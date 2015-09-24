@@ -4,10 +4,11 @@ import re
 import subprocess
 import os
 import sys
+from entry import *
 
 #-------------------------------------------
 
-dummyTest=False
+dummyTest=True
 
 routesCheckInterval=3 #in seconds
 
@@ -77,7 +78,8 @@ class Application(Frame):
 #-------------------------------------------
 
 	def btnRight(self, e):
-		tkinter.messagebox.showerror('right click', e)
+		#tkinter.messagebox.showerror('right click', e)
+		Dialog(self, 'Set button label')
 
 #-------------------------------------------
 
