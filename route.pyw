@@ -7,10 +7,6 @@ import sys
 from entry import *
 import configparser
 
-#============================
-
-
-
 #-------------------------------------------
 
 dummyTest=True
@@ -91,7 +87,7 @@ class Application(Frame):
 #-------------------------------------------
 
 	def btnRight(self, route):
-		Dialog(self, route, 'Set button label')
+		Dialog(self, route)
 
 #-------------------------------------------
 

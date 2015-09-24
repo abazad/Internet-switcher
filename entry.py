@@ -4,12 +4,11 @@ import configparser
 
 class Dialog(Toplevel):
 
-	def __init__(self, parent, route, title = None):
+	def __init__(self, parent, route):
 		self.route=route
 		Toplevel.__init__(self, parent)
 		self.transient(parent)
-		if title:
-			self.title(title)
+		self.title('Custom button label')
 		self.parent = parent
 		self.result = None
 		body = Frame(self)
@@ -36,10 +35,12 @@ class Dialog(Toplevel):
 	def buttonbox(self):
 		box = Frame(self)
 		w = Button(box, text="Save", width=10, command=self.save, default=ACTIVE)
-		w.pack(side=LEFT, padx=5, pady=5)
+		w.pack(padx=5, pady=5)
+		Label(box, justify='left', text='Note: save an empty label to clear\n        a previously set custom label.').pack()
 		self.bind("<Return>", self.save)
 		self.bind("<Escape>", self.cancel)
 		box.pack()
+
 
 	def save(self, event=None):
 		self.withdraw()
