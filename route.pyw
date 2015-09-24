@@ -166,9 +166,14 @@ class Application(Frame):
 					break
 		if(changed):
 			print('route changes detected')
-			self.container.destroy()
-			self.createWidgets()
+			self.reset()
 		self.after(routesCheckInterval*1000, self.check)
+		
+#-------------------------------------------
+
+	def reset(self):
+		self.container.destroy()
+		self.createWidgets()
 
 #-------------------------------------------
 			

@@ -58,6 +58,5 @@ class CustomLabel(Toplevel):
 		config.read(config_file)
 		config.set('button_labels', key, val)
 		with open(config_file, 'w') as file: config.write(file)
-		self.parent.container.destroy()
-		self.parent.createWidgets()
+		self.parent.reset()
 		
