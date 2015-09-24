@@ -70,8 +70,8 @@ class Application(Frame):
 			
 			cur_route['btn']=btn
 			
-			if(config.has_option('button_labels', self.routes[i]['gateway']) and config.get('button_labels', self.routes[i]['gateway'])): btn["text"]=config.get('button_labels', self.routes[i]['gateway'])
-			else: btn["text"]=self.routes[i]['gateway']
+			if(config.has_option('button_labels', cur_route['gateway']) and config.get('button_labels', cur_route['gateway'])): btn["text"]=config.get('button_labels', cur_route['gateway'])
+			else: btn["text"]=cur_route['gateway']
 			
 			frm=Frame(container)
 			frm.grid(row=cur_row,column=2, padx=5, pady=5)
@@ -85,19 +85,18 @@ class Application(Frame):
 				cur_route['stat']='off'
 			cur_route['led']=frm
 			frm.pack({"side": "left", 'padx': 1, 'pady': 1})
-			btn["command"] = lambda i=i: self.btnClick(i)
+			btn["command"] = lambda route=cur_route: self.btnClick(route)
 			btn.bind('<Button-3>', lambda event, route=cur_route: self.btnRight(route))
 
 #-------------------------------------------
 
 	def btnRight(self, route):
-		#tkinter.messagebox.showerror('right click', e.widget['text'])
 		Dialog(self, route, 'Set button label')
 
 #-------------------------------------------
 
-	def routeCommand(self, i, kind, metric=1):
-		command='route '+kind+' 0.0.0.0 mask 0.0.0.0 '+self.routes[i]['gateway']+' metric '+str(metric)
+	def routeCommand(self, route, kind, metric=1):
+		command='route '+kind+' 0.0.0.0 mask 0.0.0.0 '+route['gateway']+' metric '+str(metric)
 		print('=============================================================')
 		print(command)
 		if(not dummyTest):
@@ -111,43 +110,45 @@ class Application(Frame):
 				else: self.showError(command+"\n\n"+err)
 		print('=============================================================')
 		if(not dummyTest and err): return False
-		self.routes[i]['metric2']=metric
+		route['metric2']=metric
 		return True
 
 #-------------------------------------------
+
 	def showError(self, e):
 		tkinter.messagebox.showerror('Error!', e)
+		
 #-------------------------------------------
 
 	def delAllRoutes(self):
-		for i in range(len(self.routes)):
-			if(self.routes[i]['stat']!='del'):
-				if(not self.routeCommand(i, 'delete')): continue
-				self.routes[i]['stat']='del'
-				self.routes[i]['led']['bg']=self.offColor		
+		for route in self.routes:
+			if(route['stat']!='del'):
+				if(not self.routeCommand(route, 'delete')): continue
+				route['stat']='del'
+				route['led']['bg']=self.offColor		
 
 #-------------------------------------------		
 
-	def routeOn(self, i):
-		if(not self.routeCommand(i, 'add')): return
-		self.routes[i]['led']['bg']=self.onColor
-		self.routes[i]['stat']='on'
+	def routeOn(self, route):
+		if(not self.routeCommand(route, 'add')): return
+		route['led']['bg']=self.onColor
+		route['stat']='on'
 
 #-------------------------------------------		
 
-	def routeOff(self, i):
-		if(self.routes[i]['stat']!='del'):
-			if(self.routes[i]['metric2']<=1):
-				if(not self.routeCommand(i, 'add', 2)): return
-			self.routes[i]['stat']='off'
-			self.routes[i]['led']['bg']=self.offColor
+	def routeOff(self, route):
+		if(route['stat']!='del'):
+			if(route['metric2']<=1):
+				if(not self.routeCommand(route, 'add', 2)): return
+			route['stat']='off'
+			route['led']['bg']=self.offColor
 
 #-------------------------------------------		
 		
-	def btnClick(self, i):
-		if(self.routes[i]['stat']!='on'):
-			for j in range(len(self.routes)): self.routeOff(j)
-			self.routeOn(i)
+	def btnClick(self, route):
+		if(route['stat']!='on'):
+			for tmp in self.routes: self.routeOff(tmp)
+			self.routeOn(route)
 		else:
 			self.delAllRoutes()
 
