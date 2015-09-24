@@ -9,7 +9,7 @@ import configparser
 
 #-------------------------------------------
 
-dummyTest=True
+dummyTest=False
 
 routesCheckInterval=3 #in seconds
 
