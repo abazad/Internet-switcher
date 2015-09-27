@@ -16,10 +16,10 @@ class Application(Frame):
 	def readConfigs(self):
 		global dummyTest, routesCheckInterval, onColor, offColor
 		config.read(configFile)
-		dummyTest=config.getboolean('DEFAULT', 'dummy_test')
-		routesCheckInterval=config.getint('DEFAULT', 'routes_check_interval')
-		onColor=config.get('DEFAULT', 'on_color')
-		offColor=config.get('DEFAULT', 'off_color')
+		dummyTest=config.getboolean('main', 'dummy_test')
+		routesCheckInterval=config.getint('main', 'routes_check_interval')
+		onColor=config.get('main', 'on_color')
+		offColor=config.get('main', 'off_color')
 
 #-------------------------------------------
 
