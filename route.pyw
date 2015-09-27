@@ -124,6 +124,7 @@ class Application(Frame):
 				if(not self.routeCommand(route, 'delete')): continue
 				route['stat']='del'
 				route['led']['bg']=self.offColor		
+		self.defaultGateway=''
 
 #-------------------------------------------		
 
@@ -131,6 +132,7 @@ class Application(Frame):
 		if(not self.routeCommand(route, 'add')): return
 		route['led']['bg']=self.onColor
 		route['stat']='on'
+		self.defaultGateway=route['gateway']
 
 #-------------------------------------------		
 
@@ -165,16 +167,18 @@ class Application(Frame):
 			if(routes1[i]['stat']!='del'): num+=1
 			
 		changed=False
-		if(gateway1!=gateway2): changed=True
-		elif(len(routes2)!=num): changed=True
+		if(gateway1!=gateway2):
+			changed='default gateway'
+			print(gateway1+' -> '+gateway2)
+		elif(len(routes2)!=num): changed='num'
 		else:
 			for i in range(len(routes2)):
 				if(routes2[i]['gateway']!=routes1[i]['gateway']):
-					changed=True
+					changed='gateway'
 					break
 						
 		if(changed):
-			print('route changes detected')
+			print('route changes detected ('+changed+')')
 			self.reset()
 		self.after(routesCheckInterval*1000, self.check)
 		
