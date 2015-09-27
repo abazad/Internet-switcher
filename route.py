@@ -5,12 +5,15 @@ import subprocess
 import os
 import sys
 from custom_label import *
+import configparser
 
 #-------------------------------------------
 
-dummyTest=False
-
-routesCheckInterval=3 #in seconds
+config_file=os.path.dirname(os.path.realpath(__file__))+'\\config.ini'
+config = configparser.ConfigParser()
+config.read(config_file)
+dummyTest=config.getboolean('DEFAULT', 'dummy_test')
+routesCheckInterval=config.getint('DEFAULT', 'routes_check_interval')
 
 #-------------------------------------------
 
@@ -46,8 +49,6 @@ class Application(Frame):
 		self.onColor='#0f0'
 		self.offColor='#999'
 		
-		config_file=os.path.dirname(os.path.realpath(__file__))+'\\config.ini'
-		config = configparser.ConfigParser()
 		config.read(config_file)
 		
 		self.routes=self.queryRoutes()
@@ -163,19 +164,24 @@ class Application(Frame):
 		gateway2=self.defaultGateway
 		
 		num=0
-		for i in range(len(routes1)):
-			if(routes1[i]['stat']!='del'): num+=1
+		for route in routes1:
+			if(route['stat']!='del'): num+=1
 			
 		changed=False
 		if(gateway1!=gateway2):
-			changed='default gateway'
-			print(gateway1+' -> '+gateway2)
-		elif(len(routes2)!=num): changed='num'
+			changed='default gateway changed: '+gateway1+' -> '+gateway2
+		elif(len(routes2)!=num): changed='number of routes changed'
 		else:
-			for i in range(len(routes2)):
-				if(routes2[i]['gateway']!=routes1[i]['gateway']):
-					changed='gateway'
-					break
+			for r1 in routes1:
+				if(r1['stat']!='del'):
+					found=False
+					for  r2 in routes2:
+						if(r1['gateway']==r2['gateway']):
+							found=True
+							break
+					if(not found):
+						changed='some gateway changed'
+						break
 						
 		if(changed):
 			print('route changes detected ('+changed+')')
