@@ -45,18 +45,12 @@ class CustomLabel(Toplevel):
 	def save(self, event=None):
 		self.withdraw()
 		self.update_idletasks()
-		self.writeConfig(self.route['gateway'], self.txt.get())
+		self.parent.config.set('button_labels', self.route['gateway'], self.txt.get())
+		self.parent.saveConfigs()
+		self.parent.reset()
 		self.cancel()
 
 	def cancel(self, event=None):
 		self.parent.focus_set()
 		self.destroy()
-		
-	def writeConfig(self, key, val):
-		config_file=os.path.dirname(os.path.realpath(__file__))+'\\config.ini'
-		config = configparser.ConfigParser()
-		config.read(config_file)
-		config.set('button_labels', key, val)
-		with open(config_file, 'w') as file: config.write(file)
-		self.parent.reset()
 		

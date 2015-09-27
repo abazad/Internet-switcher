@@ -14,13 +14,21 @@ class Application(Frame):
 #-------------------------------------------
 
 	def readConfigVars(self):
-		global config, dummyTest, routesCheckInterval, onColor, offColor
-		config=configparser.ConfigParser()
-		config.read(os.path.dirname(os.path.realpath(__file__))+'\\config.ini')
-		dummyTest=config.getboolean('DEFAULT', 'dummy_test')
-		routesCheckInterval=config.getint('DEFAULT', 'routes_check_interval')
-		onColor=config.get('DEFAULT', 'on_color')
-		offColor=config.get('DEFAULT', 'off_color')
+		global configFile, dummyTest, routesCheckInterval, onColor, offColor
+		self.config=configparser.ConfigParser()
+		configFile=os.path.dirname(os.path.realpath(__file__))+'\\config.ini'
+		self.config.read(configFile)
+		dummyTest=self.config.getboolean('DEFAULT', 'dummy_test')
+		routesCheckInterval=self.config.getint('DEFAULT', 'routes_check_interval')
+		onColor=self.config.get('DEFAULT', 'on_color')
+		offColor=self.config.get('DEFAULT', 'off_color')
+
+#-------------------------------------------
+
+	def saveConfigs(self):
+		file=open(configFile, 'w')
+		self.config.write(file)
+		file.close()
 
 #-------------------------------------------
 	
@@ -66,7 +74,7 @@ class Application(Frame):
 			
 			cur_route['btn']=btn
 			
-			if(config.has_option('button_labels', cur_route['gateway']) and config.get('button_labels', cur_route['gateway'])): btn["text"]=config.get('button_labels', cur_route['gateway'])
+			if(self.config.has_option('button_labels', cur_route['gateway']) and self.config.get('button_labels', cur_route['gateway'])): btn["text"]=self.config.get('button_labels', cur_route['gateway'])
 			else: btn["text"]=cur_route['gateway']
 			
 			frm=Frame(container)
