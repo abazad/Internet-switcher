@@ -9,15 +9,18 @@ import configparser
 
 #-------------------------------------------
 
-config_file=os.path.dirname(os.path.realpath(__file__))+'\\config.ini'
-config = configparser.ConfigParser()
-config.read(config_file)
-dummyTest=config.getboolean('DEFAULT', 'dummy_test')
-routesCheckInterval=config.getint('DEFAULT', 'routes_check_interval')
+class Application(Frame):
 
 #-------------------------------------------
 
-class Application(Frame):
+	def readConfigVars(self):
+		global config, dummyTest, routesCheckInterval, onColor, offColor
+		config=configparser.ConfigParser()
+		config.read(os.path.dirname(os.path.realpath(__file__))+'\\config.ini')
+		dummyTest=config.getboolean('DEFAULT', 'dummy_test')
+		routesCheckInterval=config.getint('DEFAULT', 'routes_check_interval')
+		onColor=config.get('DEFAULT', 'on_color')
+		offColor=config.get('DEFAULT', 'off_color')
 
 #-------------------------------------------
 	
@@ -46,11 +49,8 @@ class Application(Frame):
 		
 	def createWidgets(self):
 		
-		self.onColor='#0f0'
-		self.offColor='#999'
-		
-		config.read(config_file)
-		
+		self.readConfigVars()
+	
 		self.routes=self.queryRoutes()
 		
 		self.container=container=Frame(self)
@@ -74,10 +74,10 @@ class Application(Frame):
 			frm['bg']='#000'
 			frm=Frame(frm, width=18, height=18)
 			if(cur_route['gateway']==self.defaultGateway):
-				frm['bg']=self.onColor
+				frm['bg']=onColor
 				cur_route['stat']='on'
 			else:
-				frm['bg']=self.offColor
+				frm['bg']=offColor
 				cur_route['stat']='off'
 			cur_route['led']=frm
 			frm.pack({"side": "left", 'padx': 1, 'pady': 1})
@@ -124,14 +124,14 @@ class Application(Frame):
 			if(route['stat']!='del'):
 				if(not self.routeCommand(route, 'delete')): continue
 				route['stat']='del'
-				route['led']['bg']=self.offColor		
+				route['led']['bg']=offColor		
 		self.defaultGateway=''
 
 #-------------------------------------------		
 
 	def routeOn(self, route):
 		if(not self.routeCommand(route, 'add')): return
-		route['led']['bg']=self.onColor
+		route['led']['bg']=onColor
 		route['stat']='on'
 		self.defaultGateway=route['gateway']
 
@@ -142,7 +142,7 @@ class Application(Frame):
 			if(route['metric2']<=1):
 				if(not self.routeCommand(route, 'add', 2)): return
 			route['stat']='off'
-			route['led']['bg']=self.offColor
+			route['led']['bg']=offColor
 
 #-------------------------------------------		
 		
