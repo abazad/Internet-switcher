@@ -13,21 +13,19 @@ class Application(Frame):
 
 #-------------------------------------------
 
-	def readConfigVars(self):
-		global configFile, dummyTest, routesCheckInterval, onColor, offColor
-		self.config=configparser.ConfigParser()
-		configFile=os.path.dirname(os.path.realpath(__file__))+'\\config.ini'
-		self.config.read(configFile)
-		dummyTest=self.config.getboolean('DEFAULT', 'dummy_test')
-		routesCheckInterval=self.config.getint('DEFAULT', 'routes_check_interval')
-		onColor=self.config.get('DEFAULT', 'on_color')
-		offColor=self.config.get('DEFAULT', 'off_color')
+	def readConfigs(self):
+		global dummyTest, routesCheckInterval, onColor, offColor
+		config.read(configFile)
+		dummyTest=config.getboolean('DEFAULT', 'dummy_test')
+		routesCheckInterval=config.getint('DEFAULT', 'routes_check_interval')
+		onColor=config.get('DEFAULT', 'on_color')
+		offColor=config.get('DEFAULT', 'off_color')
 
 #-------------------------------------------
 
-	def saveConfigs(self):
+	def writeConfigs(self):
 		file=open(configFile, 'w')
-		self.config.write(file)
+		config.write(file)
 		file.close()
 
 #-------------------------------------------
@@ -57,7 +55,7 @@ class Application(Frame):
 		
 	def createWidgets(self):
 		
-		self.readConfigVars()
+		self.readConfigs()
 	
 		self.routes=self.queryRoutes()
 		
@@ -74,7 +72,7 @@ class Application(Frame):
 			
 			cur_route['btn']=btn
 			
-			if(self.config.has_option('button_labels', cur_route['gateway']) and self.config.get('button_labels', cur_route['gateway'])): btn["text"]=self.config.get('button_labels', cur_route['gateway'])
+			if(config.has_option('button_labels', cur_route['gateway']) and config.get('button_labels', cur_route['gateway'])): btn["text"]=config.get('button_labels', cur_route['gateway'])
 			else: btn["text"]=cur_route['gateway']
 			
 			frm=Frame(container)
@@ -205,6 +203,9 @@ class Application(Frame):
 #-------------------------------------------
 			
 	def __init__(self, master=None):
+		global config, configFile
+		config=self.config=configparser.ConfigParser()
+		configFile=os.path.dirname(os.path.realpath(__file__))+'\\config.ini'
 		Frame.__init__(self, master)
 		self.pack()
 		self.createWidgets()

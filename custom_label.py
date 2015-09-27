@@ -46,7 +46,7 @@ class CustomLabel(Toplevel):
 		self.withdraw()
 		self.update_idletasks()
 		self.parent.config.set('button_labels', self.route['gateway'], self.txt.get())
-		self.parent.saveConfigs()
+		self.parent.writeConfigs()
 		self.parent.reset()
 		self.cancel()
 
