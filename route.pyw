@@ -153,17 +153,26 @@ class Application(Frame):
 #-------------------------------------------
 
 	def check(self):
+		
 		routes1=self.routes
+		gateway1=self.defaultGateway
+		
 		routes2=self.queryRoutes()
+		gateway2=self.defaultGateway
+		
+		num=0
+		for i in range(len(routes1)):
+			if(routes1[i]['stat']!='del'): num+=1
+			
 		changed=False
-		if(len(routes1) and routes1[0]['stat']=='del'):
-			if(len(routes2)): changed=True
-		elif(len(routes2)!=len(routes1)): changed=True
+		if(gateway1!=gateway2): changed=True
+		elif(len(routes2)!=num): changed=True
 		else:
 			for i in range(len(routes2)):
 				if(routes2[i]['gateway']!=routes1[i]['gateway']):
 					changed=True
 					break
+						
 		if(changed):
 			print('route changes detected')
 			self.reset()
