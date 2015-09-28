@@ -86,7 +86,8 @@ class Application(Frame):
 				cur_route['stat']='on'
 			else:
 				frm['bg']=offColor
-				cur_route['stat']='off'
+				cur_route.setdefault('stat', 'off')
+				#cur_route['stat']='off'
 			cur_route['led']=frm
 			frm.pack({"side": "left", 'padx': 1, 'pady': 1})
 			btn["command"] = lambda route=cur_route: self.btnClick(route)
@@ -203,12 +204,7 @@ class Application(Frame):
 							break
 					if(not found):
 						deletedRoutes.append(r1)
-			print('deleted routes:', deletedRoutes)
-			print('--------------------')
-			print(routes1)
-			print('--------------------')
-			print(routes2)
-			print('--------------------')
+			#print('deleted routes:', deletedRoutes)
 			self.reset(deletedRoutes)
 		self.after(routesCheckInterval*1000, self.check)
 		
