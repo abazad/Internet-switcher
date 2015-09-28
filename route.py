@@ -43,7 +43,7 @@ class Application(Frame):
 
 		routes=[]
 		for i in range(len(result)):
-			routes.append({'gateway':result[i][2], 'metric':int(result[i][4]), 'metric2': int(result[i][4])})
+			routes.append({'gateway':result[i][2], 'metric':int(result[i][4]), 'metric2': int(result[i][4]), 'ip':result[i][3]})
 			
 		result=re.findall('[ \t]*Default Gateway:[ \t]+([0-9.]{7,})', out)
 		if(len(result)): self.defaultGateway=result[0]
@@ -53,13 +53,13 @@ class Application(Frame):
 
 #-------------------------------------------
 		
-	def createWidgets(self, deletedRoutes=None):
+	def createWidgets(self, addRoutes=None):
 		
 		self.readConfigs()
 	
 		self.routes=self.queryRoutes()
 		
-		if(deletedRoutes): self.routes=deletedRoutes+self.routes
+		if(addRoutes): self.routes=addRoutes+self.routes
 		
 		self.container=container=Frame(self)
 		container.pack()
@@ -173,46 +173,58 @@ class Application(Frame):
 		gateway2=self.defaultGateway
 		
 		num=0
+		deletedRoutes=[]
+		existentRoutes=[]
 		for route in routes1:
-			if(route['stat']!='del'): num+=1
+			if(route['stat']!='del'):
+				num+=1
+				existentRoutes.append(route)
+			else: deletedRoutes.append(route)
 			
-		changed=False
-		if(gateway1!=gateway2):
-			changed='default gateway changed: '+gateway1+' -> '+gateway2
+		changed=''
+		if(gateway1!=gateway2): changed='default gateway changed: '+gateway1+' -> '+gateway2
 		elif(len(routes2)!=num): changed='number of routes changed'
 		else:
-			for r1 in routes1:
-				if(r1['stat']!='del'):
-					found=False
-					for  r2 in routes2:
-						if(r1['gateway']==r2['gateway']):
-							found=True
-							break
-					if(not found):
-						changed='some gateway changed'
+			for e in existentRoutes:
+				found=False
+				for  r2 in routes2:
+					if(e['gateway']==r2['gateway']):
+						found=True
 						break
-						
+				if(not found):
+					changed='some gateway changed'
+					break
+		
+		addRoutes=[]
+		if(deletedRoutes):
+			ipconfig=False
+			for d in deletedRoutes:
+				found=False
+				for r2 in routes2:
+					if(d['gateway']==r2['gateway']):
+						found=True
+						changed+='/deleted1'
+						break
+				if(found): continue
+				if(not ipconfig):
+					out,err=subprocess.Popen('ipconfig', shell=True, stdout=subprocess.PIPE).communicate()
+					out=out.decode()
+					ipconfig=True
+				if(out.find(': '+d['ip'])==-1): changed+='/deleted2'
+				else: addRoutes.append(d)
+				#print('\n***\n',deletedRoutes,'\n***\n')
+			
 		if(changed):
 			print('route changes detected ('+changed+')')
-			deletedRoutes=[]
-			for r1 in routes1:
-				if(r1['stat']=='del'):
-					found=False
-					for  r2 in routes2:
-						if(r1['gateway']==r2['gateway']):
-							found=True
-							break
-					if(not found):
-						deletedRoutes.append(r1)
-			#print('deleted routes:', deletedRoutes)
-			self.reset(deletedRoutes)
+			self.reset(addRoutes)
+		
 		self.after(routesCheckInterval*1000, self.check)
 		
 #-------------------------------------------
 
-	def reset(self, deletedRoutes):
+	def reset(self, addRoutes):
 		self.container.destroy()
-		self.createWidgets(deletedRoutes)
+		self.createWidgets(addRoutes)
 
 #-------------------------------------------
 			
