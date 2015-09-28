@@ -53,11 +53,13 @@ class Application(Frame):
 
 #-------------------------------------------
 		
-	def createWidgets(self):
+	def createWidgets(self, deletedRoutes=None):
 		
 		self.readConfigs()
 	
 		self.routes=self.queryRoutes()
+		
+		if(deletedRoutes): self.routes=deletedRoutes+self.routes
 		
 		self.container=container=Frame(self)
 		container.pack()
@@ -191,14 +193,30 @@ class Application(Frame):
 						
 		if(changed):
 			print('route changes detected ('+changed+')')
-			self.reset()
+			deletedRoutes=[]
+			for r1 in routes1:
+				if(r1['stat']=='del'):
+					found=False
+					for  r2 in routes2:
+						if(r1['gateway']==r2['gateway']):
+							found=True
+							break
+					if(not found):
+						deletedRoutes.append(r1)
+			print('deleted routes:', deletedRoutes)
+			print('--------------------')
+			print(routes1)
+			print('--------------------')
+			print(routes2)
+			print('--------------------')
+			self.reset(deletedRoutes)
 		self.after(routesCheckInterval*1000, self.check)
 		
 #-------------------------------------------
 
-	def reset(self):
+	def reset(self, deletedRoutes):
 		self.container.destroy()
-		self.createWidgets()
+		self.createWidgets(deletedRoutes)
 
 #-------------------------------------------
 			
