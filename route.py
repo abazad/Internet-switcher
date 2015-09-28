@@ -210,9 +210,8 @@ class Application(Frame):
 					out,err=subprocess.Popen('ipconfig', shell=True, stdout=subprocess.PIPE).communicate()
 					out=out.decode()
 					ipconfig=True
-				if(out.find(': '+d['ip'])==-1): changed+='/deleted2'
+				if(out.find(' '+d['ip']+'\r')==-1 and out.find(' '+d['ip']+'\n')==-1): changed+='/deleted2'
 				else: addRoutes.append(d)
-				#print('\n***\n',deletedRoutes,'\n***\n')
 			
 		if(changed):
 			print('route changes detected ('+changed+')')
