@@ -74,7 +74,10 @@ class Application(Frame):
 			
 			cur_route['btn']=btn
 			
-			if(config.has_option('button_labels', cur_route['gateway']) and config.get('button_labels', cur_route['gateway'])): btn["text"]=config.get('button_labels', cur_route['gateway'])
+			if(config.has_option('button_labels', cur_route['gateway']) and config.get('button_labels', cur_route['gateway'])):
+				custom_label=config.get('button_labels', cur_route['gateway'])
+				custom_label=custom_label.center(15)
+				btn["text"]=custom_label
 			else: btn["text"]=cur_route['gateway']
 			
 			frm=Frame(container)

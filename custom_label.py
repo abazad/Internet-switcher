@@ -26,7 +26,7 @@ class CustomLabel(Toplevel):
 	def body(self, master):
 		frm=Frame(master)
 		frm.pack()
-		Label(frm, text="Enter label for "+self.route['btn']['text']+':').pack({"side": "top", 'padx': 1, 'pady': 1})
+		Label(frm, text="Enter label for "+self.route['btn']['text'].strip()+':').pack({"side": "top", 'padx': 1, 'pady': 1})
 		self.txt=Entry(frm)
 		self.txt.pack()
 		self.txt.focus_set()
