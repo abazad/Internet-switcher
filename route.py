@@ -53,11 +53,11 @@ class Application(Frame):
 
 #-------------------------------------------
 		
-	def createWidgets(self, addRoutes=None):
+	def createWidgets(self, queryRoutes=True, addRoutes=None):
 		
 		self.readConfigs()
 	
-		self.routes=self.queryRoutes()
+		if(queryRoutes): self.routes=self.queryRoutes()
 		
 		if(addRoutes): self.routes=addRoutes+self.routes
 		
@@ -215,15 +215,15 @@ class Application(Frame):
 			
 		if(changed):
 			print('route changes detected ('+changed+')')
-			self.reset(addRoutes)
+			self.reset(addRoutes=addRoutes)
 		
 		self.after(routesCheckInterval*1000, self.check)
 		
 #-------------------------------------------
 
-	def reset(self, addRoutes=None):
+	def reset(self, queryRoutes=True, addRoutes=None):
 		self.container.destroy()
-		self.createWidgets(addRoutes)
+		self.createWidgets(queryRoutes, addRoutes)
 
 #-------------------------------------------
 			
