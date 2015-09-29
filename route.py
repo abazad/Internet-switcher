@@ -32,7 +32,7 @@ class Application(Frame):
 	
 	def queryRoutes(self):
 	
-		if dummyTest: command='type "'+os.path.dirname(os.path.realpath(__file__))+'\dummy_routes.txt"'
+		if dummyTest: command='type dummy_routes.txt'
 		else: command='route print 0.0.0.0'
 
 		p=subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
@@ -233,7 +233,7 @@ class Application(Frame):
 	def __init__(self, master=None):
 		global config, configFile
 		config=self.config=configparser.ConfigParser()
-		configFile=os.path.dirname(os.path.realpath(__file__))+'\\config.ini'
+		configFile='config.ini'
 		Frame.__init__(self, master)
 		self.pack()
 		self.createWidgets()
