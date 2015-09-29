@@ -203,14 +203,14 @@ class Application(Frame):
 				for r2 in routes2:
 					if(d['gateway']==r2['gateway']):
 						found=True
-						changed+='/deleted1'
+						changed+='/deleted1->'+d['gateway']
 						break
 				if(found): continue
 				if(not ipconfig):
 					out,err=subprocess.Popen('ipconfig', shell=True, stdout=subprocess.PIPE).communicate()
 					out=out.decode()
 					ipconfig=True
-				if(out.find(' '+d['ip']+'\r')==-1 and out.find(' '+d['ip']+'\n')==-1): changed+='/deleted2'
+				if(out.find(' '+d['ip']+'\r')==-1 and out.find(' '+d['ip']+'\n')==-1): changed+='/deleted2->'+d['gateway']
 				else: addRoutes.append(d)
 			
 		if(changed):
