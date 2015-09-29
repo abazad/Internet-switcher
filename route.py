@@ -221,7 +221,7 @@ class Application(Frame):
 		
 #-------------------------------------------
 
-	def reset(self, addRoutes):
+	def reset(self, addRoutes=None):
 		self.container.destroy()
 		self.createWidgets(addRoutes)
 
