@@ -15,7 +15,7 @@ class Application(Frame):
 
 	def readConfigs(self):
 		global dummyTest, routesCheckInterval, onColor, offColor
-		config.read(configFile)
+		config.read(configFile, encoding='utf-8')
 		dummyTest=config.getboolean('main', 'dummy_test')
 		routesCheckInterval=config.getint('main', 'routes_check_interval')
 		onColor=config.get('main', 'on_color')
@@ -24,7 +24,7 @@ class Application(Frame):
 #-------------------------------------------
 
 	def writeConfigs(self):
-		file=open(configFile, 'w')
+		file=open(configFile, 'w', encoding='utf-8')
 		config.write(file)
 		file.close()
 
