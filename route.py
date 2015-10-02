@@ -64,9 +64,7 @@ class Application(Frame):
 		self.container=container=Frame(self)
 		container.pack()
 		
-		if(not self.routes):
-			lbl=Label(container, text='No default routes found!')
-			lbl.pack()
+		if(not self.routes): Label(container, text='No default routes found!').pack()
 		
 		for i in range(len(self.routes)):
 			

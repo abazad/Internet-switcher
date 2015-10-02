@@ -1,1 +1,1 @@
-- routes info button?
+- routes (detailed) info button?
